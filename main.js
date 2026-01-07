@@ -38,14 +38,31 @@ audioBtn.addEventListener('click', () => {
     if (isPlaying) {
         bgMusic.pause();
         audioBtn.innerHTML = '<span>🎵</span>'; // Play icon
+        audioBtn.style.animation = 'btn-pulse 2s infinite';
     } else {
         bgMusic.play().catch(error => {
             console.log("Audio play failed:", error);
             alert("Toque la pantalla para permitir la reproducción de audio");
         });
         audioBtn.innerHTML = '<span>⏸️</span>'; // Pause icon
+        audioBtn.style.animation = 'none';
     }
     isPlaying = !isPlaying;
+});
+
+// Try to handle autoplay state on load
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if audio is actually playing (browsers might block autoplay)
+    bgMusic.play().then(() => {
+        isPlaying = true;
+        audioBtn.innerHTML = '<span>⏸️</span>';
+        audioBtn.style.animation = 'none';
+    }).catch(() => {
+        // Autoplay was blocked
+        isPlaying = false;
+        audioBtn.innerHTML = '<span>🎵</span>';
+        // Animation continues to encourage interaction
+    });
 });
 
 // Auto-play attempt (often blocked by browsers, but worth a try with muted check usually, but here we strictly use button as primary)
